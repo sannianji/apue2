@@ -9,8 +9,8 @@ int main(void)
 	char buf[64];
 	pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
 
-	pthread_mutex_lock(&lock);
-	printf("mutex is locked\n");
+//	pthread_mutex_lock(&lock);
+	printf("mutex is initialed\n");
 
 	clock_gettime(CLOCK_REALTIME,&tout);
 	tmp=localtime(&tout.tv_sec);
@@ -24,8 +24,8 @@ int main(void)
 	strftime(buf,sizeof(buf),"%r",tmp);
 	printf("the time is now:%s\n",buf);
 	if(err==0)
-		printf("mutex locked again!\n");
+		printf("mutex locked!\n");
 	else
-		printf("can't lock mutex again:%s\n",strerror(err));
+		printf("can't lock mutex :%s\n",strerror(err));
 	exit(0);
 }
