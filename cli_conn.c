@@ -19,6 +19,39 @@ int cli_conn(const char *name)
 		return -1;
 	memset(&un,0,sizeof(un));
 	un.sun_family=AF_UNIX;
-	sprintf(un.sun_path,"%s%05ld",CLI_PATH,(long))
+	sprintf(un.sun_path,"%s%05ld",CLI_PATH,(long)getpid());
+	len=offsetof(struct sockaddr_un,sun_path)+strlen(un.sun_path);
+	
+	unlink(un.sun_path);
+	if(bind(fd,(struct sockaddr*)&un,len)<0)
+	{
+		rval=-2;
+		goto errout;
+	}
+	if(chmode(un.sun_paht,CLI_PERM)<0)
+	{
+		rval=-3;
+		do_unlink=1;
+		goto errout;
+	}
+
+	memset(&sun,0,sizeof(sun),);
+	sun.sun_family=AF_UNIX;
+	strcpy(sun.sun_path,name);
+	len=offsetof(struct sockaddr_un,sun_path)+strlen(name);
+	if(connect(fd,(struct sockaddr *)&sun,len)<0)
+	{
+		rval=-4;
+		do_unlink=1;
+		goto errout;
+	}
+	return fd;
+errout:
+	err=errno;
+	close(fd);
+	if(do_unlink)
+		unlink(un.sun_path);
+	errno=err;
+	return rval;
 
 }
