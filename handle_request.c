@@ -7,6 +7,16 @@ void handle_request(char *buf,int nread,int fd)
 	
 	if(buff[nread-1]!=0)
 	{
-		snprintf()
+		snprintf(errmsg,MAXLINE-1,"request not null terminated: %*.*s\n",nread,nread,buf);
+		send_err(fd,-1,errmsg);
+		return;
 	}
+	if(buf_args(buf,cli_args)<0)
+	{	
+		send_err(fd,-1,errmsg);
+		return;
+	}
+	if(send_fd(fd,newfd)<0)
+		err_sys("send_fd error");
+	close(newfd);
 }
